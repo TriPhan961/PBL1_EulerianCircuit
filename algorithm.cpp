@@ -154,6 +154,11 @@ void fleury_execute(int isDirected, int *cycle, int *len){
     }
     // Step 3: Tra ve ket qua
     *len = idxF;
+    if((*len!=m)&&(*len!=m+1)){
+    	print_error("Do thi KHONG co chu trinh hay duong di Euler!");
+    	hasEuler = 0;
+        return;
+    }
     for(int i = 0; i < idxF; i++){
         cycle[i] = pathF[i];
     }
