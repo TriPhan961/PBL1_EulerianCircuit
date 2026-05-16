@@ -6,7 +6,7 @@
 extern int n, m;
 extern int adj[MAXN][MAXN];
 extern int temp_adj[MAXN][MAXN];
-extern int resultCycle[MAXN];
+extern int resultCycle[200005];
 extern int resultLen;
 extern int isDirected;
 extern int hasEuler;

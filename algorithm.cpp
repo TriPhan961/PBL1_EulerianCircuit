@@ -6,7 +6,7 @@
 int n,m;
 int adj[MAXN][MAXN];
 int temp_adj[MAXN][MAXN];
-int resultCycle[MAXN];
+int resultCycle[200005];
 int resultLen;
 int isDirected;
 int hasEuler;
@@ -26,6 +26,42 @@ void resetVisitedF(){
     for(int i=1; i<=n; i++){
         visitedF[i] = 0;
     }
+}
+
+int isConnected() {
+    int visited[MAXN] = {0};
+    int startNode = -1;
+
+    for (int i=1; i<=n; i++) {
+        int degree = 0;
+        for (int j=1; j<=n; j++) if (adj[i][j] > 0) degree++;
+        if (degree > 0) {
+            startNode = i;
+            break;
+        }
+    }
+
+    if (startNode == -1) return 1;
+
+    int stack[MAXN], top = 0;
+    stack[top++] = startNode;
+    visited[startNode] = 1;
+    while (top > 0) {
+        int u = stack[--top];
+        for (int v=1; v<=n; v++) {
+            if (adj[u][v] > 0 && !visited[v]) {
+                visited[v] = 1;
+                stack[top++] = v;
+            }
+        }
+    }
+
+    for (int i=1; i<=n; i++) {
+        int degree = 0;
+        for (int j = 1; j <= n; j++) if (adj[i][j] > 0) degree++;
+        if (degree > 0 && !visited[i]) return 0; 
+    }
+    return 1;
 }
 
 int countReachable(int u){
@@ -126,6 +162,12 @@ void fleury_execute(int isDirected, int *cycle, int *len){
     	hasEuler = 0;
         return;
     }
+    if (!isConnected()) {
+        *len = 0;
+        print_error("Do thi KHONG co chu trinh hay duong di Euler!");
+        hasEuler = 0;
+        return;
+    }
 
     // Step 2: Thuc hien thuat toan
     int curr = startNode;
@@ -135,6 +177,7 @@ void fleury_execute(int isDirected, int *cycle, int *len){
     for(int step=0; step<m; step++){
         int nextV = -1;
         for(int v=1; v<=n; v++){
+        	if (nextV == -1) nextV = v; 
             if(temp_adj[curr][v]>0){
                 nextV = v;
                 if(!isBridge(curr, v, isDirected)) break;
@@ -287,6 +330,11 @@ void hierholzer_execute(int isDirected, int *cycle, int *len){
     
     // Step 4: Tra ve ket qua
     *len = resIdx;
+    if((*len!=m)&&(*len!=m+1)){
+    	print_error("Do thi KHONG co chu trinh hay duong di Euler!");
+    	hasEuler = 0;
+        return;
+    }
     for(int i = 0; i < resIdx; i++){
         cycle[i] = resH[resIdx - 1 - i];
     }

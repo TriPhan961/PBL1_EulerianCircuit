@@ -30,7 +30,7 @@
 #define WHITE 15
 
 int vx[101], vy[101];
-int centerX = 400, centerY = 300;
+int centerX = 560, centerY = 420; 
 int radiusLayout = 180;
 int vertexColors[101];
 int animationSpeed = 500;
@@ -46,16 +46,26 @@ void initVertexColors(int n){
         COLOR(255, 200, 160), COLOR(200, 160, 255), COLOR(160, 220, 180),
         COLOR(255, 220, 180)
     };
-    for(int i=0; i<n; i++){
+    for(int i=1; i<=n; i++){
         vertexColors[i] = colorList[i % 10];
     }
 }
 
+
 void initVertexPositions(int n){
+    int dynamicRadiusLayout = 180;
+    int dynamicVertexSize = 22;
+
+    if (n > 20) {
+        dynamicRadiusLayout = 250 + (n * 2); 
+        dynamicVertexSize = 25 - (n / 5);    
+        if (dynamicVertexSize < 8) dynamicVertexSize = 8; 
+    }
+
     for(int i=1; i<=n; i++){
         double angle = 2 * 3.14159 * i / n - 3.14159 / 2;
-        vx[i] = centerX + radiusLayout * cos(angle);
-        vy[i] = centerY + radiusLayout * sin(angle);
+        vx[i] = centerX + dynamicRadiusLayout * cos(angle);
+        vy[i] = centerY + dynamicRadiusLayout * sin(angle);
     }
 }
 
@@ -74,30 +84,28 @@ void drawGraphHeader(const char *title){
 
 void drawVertex(int id, int isHighlight){
     char str[5];
-    
+    sprintf(str, "%d", id); 
+
     setcolor(DARKGRAY);
     circle(vx[id] + 2, vy[id] + 2, RADIUS);
-    
-    setfillstyle(SOLID_FILL, vertexColors[id % 10]);
+
+    setfillstyle(SOLID_FILL, vertexColors[id]);
     setcolor(WHITE);
-    circle(vx[id], vy[id], RADIUS);
-    floodfill(vx[id], vy[id], WHITE);
-    
+    fillellipse(vx[id], vy[id], RADIUS, RADIUS); 
+
     if(isHighlight){
         setcolor(COLOR(255, 200, 0));
         setlinestyle(SOLID_LINE, 0, 3);
         circle(vx[id], vy[id], RADIUS);
         setlinestyle(SOLID_LINE, 0, 1);
-    } else {
-        setcolor(WHITE);
-        circle(vx[id], vy[id], RADIUS);
     }
-    
-    settextstyle(DEFAULT_FONT, HORIZ_DIR, 2);
+
+    setbkcolor(vertexColors[id]); 
     setcolor(BLACK);
-    sprintf(str, "%d", id + 1);
-    outtextxy(vx[id] - 7, vy[id] - 9, str);
     settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
+
+    outtextxy(vx[id] - textwidth(str)/2, vy[id] - textheight(str)/2, str);
+    setbkcolor(BLACK); 
 }
 
 
@@ -147,7 +155,7 @@ void drawStepInfo(int step, int total, int from, int to){
     
     setcolor(BLACK);
     setfillstyle(SOLID_FILL, BLACK);
-    bar(20, 60, 550, 120);
+    bar(20, 60, 250, 120); //250
     
     settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
     setcolor(COLOR(200, 180, 100));
@@ -179,34 +187,35 @@ void simulateEulerCycle(int cycle[], int len){
     
     setcolor(COLOR(200, 180, 100));
     settextstyle(DEFAULT_FONT, HORIZ_DIR, 1);
-    char str[300] = "Chu trinh Euler: ";
-    char num[10];
-    for(int i = 0; i < len; i++){
-        sprintf(num, "%d", cycle[i]);
-        strcat(str, num);
-        if(i < len - 1) strcat(str, " -> ");
-    }
-    
-    setfillstyle(SOLID_FILL, COLOR(30, 30, 50));
-    rectangle(20, getmaxy() - 100, getmaxx() - 20, getmaxy() - 20);
-    floodfill(25, getmaxy() - 95, COLOR(200, 180, 100));
-    
-    setcolor(COLOR(200, 180, 100));
-    outtextxy(30, getmaxy() - 90, "KET QUA:");
-    
-    if(strlen(str) > 80){
-        outtextxy(30, getmaxy() - 70, "Chu trinh Euler:");
-        outtextxy(30, getmaxy() - 50, str);
-    } else {
-        outtextxy(30, getmaxy() - 70, str);
-    }
+    char str[2000] = "Chu trinh Euler: ";
+	int startX = 30;
+	int startY = getmaxy() - 80;
+	int currentX = startX;
+	int currentY = startY;
+	int limitX = getmaxx() - 50; 
+	
+	setcolor(COLOR(200, 180, 100));
+	outtextxy(startX, currentY - 20, "KET QUA:");
+	
+	for (int i = 0; i < len; i++) {
+	    char num[15];
+	    sprintf(num, "%d%s", cycle[i], (i == len - 1) ? "" : " -> ");
+	    
+	    if (currentX + textwidth(num) > limitX) {
+	        currentX = startX;   
+	        currentY += 20;      
+	    }
+	    
+	    outtextxy(currentX, currentY, num);
+	    currentX += textwidth(num); 
+	}
 }
 
 void drawGraphAndSimulate(int cycle[], int len){
     initVertexColors(n);
     initVertexPositions(n);
     
-    initwindow(900, 650);
+    initwindow(1260, 900); 
     setbkcolor(BLACK);
     cleardevice();
     
