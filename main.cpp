@@ -35,6 +35,7 @@ int main(){
         
         int selectedAlgo; 
         scanf("%d", &selectedAlgo);
+        if(selectedAlgo != 1 && selectedAlgo !=2) continue;
         
         // ========== BUOC 2: CHON LOAI DO THI ==========
         printf(CONSOLE_STEP CONSOLE_BOLD "\n CHON LOAI DO THI\n" CONSOLE_RESET);
@@ -47,6 +48,7 @@ int main(){
         
         int graphType;
         scanf("%d", &graphType);
+        if(graphType != 1 && graphType !=2) continue;
         
         // ========== BUOC 3: CHON CACH NHAP DU LIEU ==========
         printf(CONSOLE_STEP CONSOLE_BOLD "\n CHON CACH NHAP DU LIEU\n" CONSOLE_RESET);
@@ -59,6 +61,7 @@ int main(){
         
         int inputChoice;
         scanf("%d", &inputChoice);
+        if(inputChoice != 1 && inputChoice !=2) continue;
         
         
         if(inputChoice == 1){
@@ -66,9 +69,14 @@ int main(){
             printf(CONSOLE_GRAY "--------------------------------------------------------------------------------\n" CONSOLE_RESET);
             
             printf(CONSOLE_WHITE "  So dinh: " CONSOLE_RESET);
-            scanf("%d", &n);
+            scanf("%d", &n); if (n < 1 || n >= MAXN) {print_error("Du lieu khong hop le!"); getchar(); getchar(); continue;}
             printf(CONSOLE_WHITE "  So canh: " CONSOLE_RESET);
-            scanf("%d", &m);
+            if(graphType==1){
+            	scanf("%d", &m); if (m < 0 || m > 4950) {print_error("Du lieu khong hop le!"); getchar(); getchar(); continue; }
+            }
+            else if(graphType==2){
+            	scanf("%d", &m); if (m < 0 || m > 9900) {print_error("Du lieu khong hop le!"); getchar(); getchar(); continue; }
+            }
             
             memset(adj, 0, sizeof(adj));
             resetVisitedF();
@@ -122,6 +130,8 @@ int main(){
         else if(inputChoice == 2){
             printf(CONSOLE_STEP CONSOLE_BOLD "\n? NHAP DU LIEU TU FILE\n" CONSOLE_RESET);
             printf(CONSOLE_GRAY "--------------------------------------------------------------------------------\n" CONSOLE_RESET);
+            printf(CONSOLE_STEP CONSOLE_BOLD "  Dong 1: n m\n" CONSOLE_RESET);
+            printf(CONSOLE_STEP CONSOLE_BOLD "  m dong tiep theo: u v\n" CONSOLE_RESET);
             
             char filename[100];
             printf(CONSOLE_WHITE "  Ten file : (vi du : input.txt) " CONSOLE_RESET);

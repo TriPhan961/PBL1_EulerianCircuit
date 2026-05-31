@@ -230,7 +230,8 @@ void drawGraphAndSimulate(int cycle[], int len){
         getch();
     }
     
-    delay(2000);
+    //delay(2000);
+    getch();
     
     closegraph();
 }

@@ -75,32 +75,56 @@ int countReachable(int u){
     return count;
 }
 
+int isPathExist(int s, int t) {
+    int visited[MAXN] = {0};
+    int stack[MAXN], top = 0;
+    
+    stack[top++] = s;
+    visited[s] = 1;
+    
+    while(top > 0) {
+        int u = stack[--top];
+        if (u == t) return 1;
+        for (int v = 1; v <= n; v++) {
+            if (temp_adj[u][v] > 0 && !visited[v]) {
+                visited[v] = 1;
+                stack[top++] = v;
+            }
+        }
+    }
+    return 0;
+}
+
 int isBridge(int u, int v, int isDirected){
     int degreeU = 0;
     for(int i=1; i<=n; i++){
         if(temp_adj[u][i]>0) degreeU++;
     }
-    if(degreeU==1) return 0;
+    if(degreeU<=1) return 0;
 
-    resetVisitedF();
-    int count1 = countReachable(u);
-    if(!isDirected){
-        temp_adj[u][v]--; temp_adj[v][u]--;
-    }
-    else{
-        temp_adj[u][v]--;
-    }
-    resetVisitedF();
-    int count2 = countReachable(u);
-
-    if(!isDirected){
-        temp_adj[u][v]++; temp_adj[v][u]++;
-    }
-    else{
+    if (isDirected) {
+        temp_adj[u][v]--; 
+        
+        int canGoBack = isPathExist(v, u); 
+        
         temp_adj[u][v]++;
-    }
+        return !canGoBack; 
+    } 
+    else {
+        resetVisitedF(); 
+        int count1 = countReachable(u);
+        
+        temp_adj[u][v]--;
+        temp_adj[v][u]--;
 
-    return (count1 > count2);
+        resetVisitedF();
+        int count2 = countReachable(u);
+
+        temp_adj[u][v]++;
+        temp_adj[v][u]++;
+
+        return (count1 > count2);
+    }
 }
 
 void fleury_execute(int isDirected, int *cycle, int *len){

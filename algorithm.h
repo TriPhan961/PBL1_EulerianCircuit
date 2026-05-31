@@ -20,6 +20,7 @@ extern int idxF;
 
 void resetVisitedF();
 int countReachable(int u);
+int isPathExist(int s, int t);
 int isBridge(int u, int v, int isDirected);
 void fleury_execute(int isDirected, int *cycle, int *len);
 
