@@ -1,0 +1,9 @@
+algorithm.o
+graphic.o
+ui.o
+main.o
+input.txt
+Makefile.win
+PBL1_ChuTrinhEuler.dev
+PBL1_ChuTrinhEuler.exe
+PBL1_ChuTrinhEuler.layout
