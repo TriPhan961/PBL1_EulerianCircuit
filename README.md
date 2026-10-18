@@ -1,102 +1,112 @@
 # [PROJECT-BASED LEARNING 1] Eulerian Circuit
 
-## Introduction
-This is Project-based Learning 1 - Computational Programming Project.
+## Giới thiệu
+Đây là PBL1 - Dự án lập trình tính toán.
 
-The program applies graph theory to find Eulerian circuits in both undirected and directed graphs using Fleury's algorithm and Hierholzer's algorithm.
+Dự án ứng dụng lí thuyết đồ thị để tìm chu trình Euler trên đồ thị vô hướng và đồ thị có hướng sử dụng thuật toán Fleury và thuật toán Hierholzer.
 
-Additionally, it visualizes the Eulerian circuit on the graph using a graphics library.
+Ngoài ra, dự án còn mô phỏng chu trình Euler trên đồ thị với thư viện đồ họa.
 
-## Project Structure
+## Cấu trúc dự án
 ```text
 PBL1_EulerianCircuit/
 |
-├── algorithm.cpp   # Core logic for Eulerian circuit algorithms (Fleury & Hierholzer)
-├── algorithm.h      # Function prototypes and declarations for algorithm.cpp
+├── algorithm.cpp   # Cốt lõi của thuật toán tìm chu trình Euler (Fleury & Hierholzer) 
+├── algorithm.h      # Khai báo nguyên mẫu hàm cho algorithm.cpp
 |
-├── graphic.cpp      # Graph rendering and step-by-step Eulerian circuit visualization
-├── graphic.h        # Function prototypes and declarations for graphic.cpp
+├── graphic.cpp      # Biểu diễn đồ thị và mô phỏng từng bước của chu trình Euler trên đồ thị
+├── graphic.h        # Khai báo nguyên mẫu hàm cho graphic.cpp
 |
-├── ui.cpp           # User interface (UI) design and layout logic
-├── ui.h             # Function prototypes and declarations for ui.cpp
+├── ui.cpp           # Thiết kế giao diện người dùng
+├── ui.h             # Khai báo nguyên mẫu hàm cho ui.cpp
 |
-|── main.cpp         # Main application entry point
+|── main.cpp         # Điểm bắt đầu chương trình
 |
 └── README.md            
 ```
 
-## Algorithms Overview
+## Tổng quan về Thuật toán
 
-### 1. Fleury's Algorithm
+### 1. Thuật toán Fleury
 
-Fleury's algorithm finds an Eulerian circuit by greedily traversing edges and removing them in real time, following the core rule: **"Never cross a bridge unless there is no other choice."**
+Thuật toán Fleury tìm chu trình Euler bằng cách duyệt qua các cạnh và xóa chúng trong thời gian thực, tuân theo quy tắc cốt lõi: "Không bao giờ đi qua cầu trừ khi không còn sự lựa chọn nào khác."
 
-* **Step 1: Graph Validation & Connectivity Check**
-  Verifies overall graph connectivity using a non-recursive Depth-First Search (DFS) with a static array stack. Checks vertex degrees to ensure an Eulerian circuit exists ($odd = 0$ for undirected graphs; $out\_deg(v) = in\_deg(v)$ for all $v$ in directed graphs).
-* **Step 2: Initialization & Data Cloning**
-  Sets $u = startNode$ and initializes the path array. Clones the original adjacency matrix to a temporary matrix (`temp_adj`) via `memcpy` to protect the initial graph data for visualization.
-* **Step 3: Edge Selection & Bridge Check**
-  Iterates through adjacent vertices $v$ of $u$. For each candidate edge $(u, v)$, it checks if the edge is a bridge via `isBridge()`:
-  * For undirected graphs, it compares reachability before and after removing the edge (`countReachable()`).
-  * For directed graphs, it checks if a return path from $v$ back to $u$ exists (`isPathExist()`).
-  * If $(u, v)$ is not a bridge, it immediately selects $v$ and breaks the loop. If all remaining edges are bridges, it falls back to selecting the first available edge.
-* **Step 4: Edge Deletion & Path Update**
-  Appends $v$ to the result path, decrements the edge weight in `temp_adj` (both directions if undirected), and updates $u = v$.
-* **Step 5: Completion**
-  Repeats Steps 3–4 until no remaining edges exist. Returns the completed Eulerian circuit sequence.
+* **Bước 1: Kiểm tra tính hợp lệ của đồ thị & Kiểm tra tính liên thông**
+
+  Xác minh tính liên thông tổng thể của đồ thị bằng thuật toán Tìm kiếm theo chiều sâu (DFS) phi đệ quy sử dụng stack mảng tĩnh. Kiểm tra bậc của các đỉnh để đảm bảo chu trình Euler tồn tại ($odd = 0$ đối với đồ thị vô hướng; $out\_deg(v) = in\_deg(v)$ với mọi $v$ trong đồ thị có hướng).
+* **Bước 2: Khởi tạo & Nhân bản dữ liệu**
+
+  Thiết lập $u = startNode$ và khởi tạo mảng đường đi. Nhân bản ma trận kề gốc sang một ma trận tạm (`temp_adj`) thông qua hàm memcpy để bảo vệ dữ liệu đồ thị ban đầu phục vụ cho việc mô phỏng.
+* **Bước 3: Chọn cạnh & Kiểm tra cạnh cầu**
+
+  Lặp qua các đỉnh kề $v$ của $u$. Đối với mỗi cạnh ứng viên $(u, v)$, thuật toán kiểm tra xem cạnh đó có phải là cầu hay không thông qua hàm `isBridge()`:
+  * Đối với đồ thị vô hướng, thuật toán so sánh khả năng có thể đi tới trước và sau khi xóa cạnh (`countReachable()`).
+  * Đối với đồ thị có hướng, thuật toán kiểm tra xem có đường đi quay lại từ $v$ về $u$ hay không (`isPathExist()`).
+  * Nếu $(u, v)$ không phải là cầu, thuật toán sẽ chọn ngay $v$ và thoát vòng lặp. Nếu tất cả các cạnh còn lại đều là cầu, thuật toán sẽ quay lại chọn cạnh khả dụng đầu tiên.
+* **Bước 4: Xóa cạnh & Cập nhật đường đi**
+
+  Thêm $v$ vào mảng đường đi kết quả, giảm trọng số cạnh trong `temp_adj` (giảm ở cả hai chiều nếu là đồ thị vô hướng), và cập nhật $u = v$.
+* **Bước 5: Hoàn thành**
+
+  Lặp lại Bước 3–4 cho đến khi không còn cạnh nào sót lại. Trả về chuỗi chu trình Euler đã hoàn chỉnh.
 
 ---
 
-### 2. Hierholzer's Algorithm
+### 2. Thuật toán Hierholzer
 
-Hierholzer's algorithm finds an Eulerian circuit in linear time $\mathcal{O}(E)$ by decomposing the graph into sub-cycles and stitching them together using a stack.
+Thuật toán Hierholzer tìm chu trình Euler bằng cách phân rã đồ thị thành các chu trình con và ghép nối chúng lại với nhau bằng một stack.
 
-* **Step 1: Graph Validation**
-  Validates graph connectivity via non-recursive DFS and confirms degree balance requirements for Eulerian existence.
-* **Step 2: Stack & Memory Setup**
-  Clones the adjacency matrix using `memcpy`. Initializes a static array stack (`stackH`) with $startNode$ pushed onto it, and creates an empty result array (`resH`).
-* **Step 3: Sub-cycle Traversal & Backtracking**
-  Inspects the top vertex $curr\_v$ of the stack:
-  * **Case 1 (Unvisited edges available):** Picks an adjacent vertex $v$, pushes $v$ onto the stack, removes edge $(curr\_v, v)$ from `temp_adj`, and continues traversal to expand the sub-cycle.
-  * **Case 2 (Stuck / No available edges):** When $curr\_v$ has no remaining outgoing edges, a sub-cycle is closed. The algorithm pops $curr\_v$ from the stack and appends it to `resH` (backtracking phase).
-* **Step 4: Path Reversal & Completion**
-  Repeats Step 3 until the stack is empty. Because vertices are collected during backtracking, the sequence in `resH` is reversed. The algorithm reverses `resH` to produce the final, correct chronological Eulerian circuit.
+* **Bước 1: Kiểm tra tính hợp lệ của đồ thị**
+
+  Xác thực tính liên thông của đồ thị thông qua DFS phi đệ quy và xác nhận các yêu cầu cân bằng bậc cho sự tồn tại của đường đi Euler.
+* **Bước 2: Thiết lập Stack & Bộ nhớ**
+
+  Nhân bản ma trận kề bằng hàm memcpy. Khởi tạo một stack mảng tĩnh (`stackH`) với $startNode$ được đẩy vào stack, đồng thời tạo một mảng kết quả trống (`resH`).
+* **Bước 3: Duyệt chu trình con & Quay lui**
+
+  Kiểm tra đỉnh ở đỉnh stack $curr\_v$:
+  * **Trường hợp 1 (Có sẵn các cạnh chưa duyệt):**  Chọn một đỉnh kề $v$, đẩy $v$ vào stack, xóa cạnh $(curr\_v, v)$ khỏi `temp_adj`, và tiếp tục quá trình duyệt để mở rộng chu trình con.
+  * **Trường hợp 2 (Bị mắc kẹt / Không còn cạnh khả dụng):** Khi $curr\_v$ không còn cạnh đi ra nào, một chu trình con đã được khép kín. Thuật toán lấy $curr\_v$ ra khỏi stack và thêm nó vào resH (giai đoạn quay lui).
+* **Bước 4: Đảo ngược đường đi & Hoàn thành**
+
+  Lặp lại Bước 3 cho đến khi stack trống. Do các đỉnh được thu thập trong quá trình quay lui, thứ tự trong `resH` bị đảo ngược. Thuật toán tiến hành đảo ngược resH để tạo ra chu trình Euler theo đúng thứ tự thời gian cuối cùng và chính xác.
 ---
 
-### 3. Algorithm Comparison
+### 3. So sánh thuật toán
 
-| Criteria | Fleury's Algorithm | Hierholzer's Algorithm |
+| Tiêu chí | Thuật toán Fleury | Thuật toán Hierholzer |
 | :--- | :--- | :--- |
-| **Principle** | Gradually deletes edges, prioritizing avoiding bridges to preserve graph connectivity. | Decomposes the graph into simple cycles, then joins them at common vertices using a Stack. |
-| **Time Complexity** | $\mathcal{O}(E \times (V + E))$ | $\mathcal{O}(V \times E)$ |
-| **Memory** | Moderate (primarily stores the graph structure). | Slightly higher due to requiring a Stack structure to trace the path. |
-| **Pros** | Intuitive and easy to understand from a mathematical logic perspective. | Very fast execution speed; efficient for large-scale graphs. |
-| **Cons** | Impractical for large graphs; complex bridge-checking function. | Requires stack management techniques. |
+| **Nguyên lí** | Xóa cạnh dần dần, ưu tiên tránh các cạnh cầu (bridge) để giữ tính liên thông của đồ thị. | Phân rã đồ thị thành các chu trình đơn, sau đó nối chúng lại tại các đỉnh chung bằng Stack. |
+| **Độ phức tạp thời gian** | $\mathcal{O}(E \times (V + E))$ | $\mathcal{O}(V \times E)$ |
+| **Bộ nhớ** | Trung bình (chủ yếu lưu trữ cấu trúc đồ thị). | Cao hơn một chút do cần cấu trúc Stack để truy vết đường đi. |
+| **Ưu điểm** | Trực quan, dễ hiểu dưới góc độ tư duy logic toán học. | Tốc độ thực thi rất nhanh; hiệu quả với đồ thị quy mô lớn. |
+| **Nhược điểm** | Không khả thi với đồ thị lớn; hàm kiểm tra cạnh cầu phức tạp. | Đòi hỏi kỹ thuật quản lý ngăn xếp (Stack). |
 
 
 
 
 ---
 
-## How to Run the Program
+## Hướng dẫn chạy chương trình
 
-Follow these steps to build and run the application in Dev-C++:
+Thực hiện theo các bước sau để biên dịch và chạy ứng dụng trong Dev-C++:
 
-1. **IDE & Graphics Library Setup**: 
-   * **Dev-C++** IDE installed on your system.
-   * **WinBGIm** (Windows BGI extension for C/C++) graphics library installed and correctly linked to Dev-C++ to support the graph visualization features.
-2. **Compiler**: **GCC / G++** compiler.
+1. **Cài đặt IDE & Thư viện đồ họa:**: 
+   * **Dev-C++** IDE đã được cài đặt trên máy tính.
+   * **Thư viện đồ họa WinBGIm** đã được cài đặt và liên kết chính xác với Dev-C++ để hỗ trợ tính năng trực quan hóa đồ thị. 
 
-3. **Open the Project / Files**:
-   * Launch **Dev-C++**.
-   * Open the project file (`.dev`), or open all source files (`algorithm.cpp`, `graphic.cpp`, `ui.cpp`, `main.cpp`) and header files (`.h`) together.
-4. **Build and Run**:
-   * Open `main.cpp`.
-   * Press **F11** (or go to **Execute** ➔ **Compile & Run**).
-   * The program will compile the source code, open the interactive graphical UI, and allow you to visualize Fleury's and Hierholzer's algorithms step-by-step.
+2. **Trình biên dịch**: GCC / G++.
 
-## Project Members
-* **Students**: Ho Tan Phuoc - Phan Huu Tri
-* **Instructor**: Dr. Nguyen Van Hieu
-* **Course**: Project-based Learning 1 – Computational Programming Project
-* **University**: University of Science and Technology - The University of Da Nang
+3. **Mở Dự án**:
+   * Khởi chạy **Dev-C++**.
+   * Mở tệp dự án (`.dev`), hoặc mở đồng thời tất cả các tệp nguồn (`algorithm.cpp`, `graphic.cpp`, `ui.cpp`, `main.cpp`) và tệp tiêu đề (`.h`).
+4. **Biên dịch và Chạy**:
+   * Mở tệp `main.cpp`.
+   * Nhấn **F11** (hoặc vào **Execute** ➔ **Compile & Run**).
+   * Chương trình sẽ biên dịch mã nguồn, mở giao diện người dùng đồ họa tương tác (GUI) và cho phép quan sát các thuật toán Fleury và Hierholzer từng bước một cách trực quan.
+
+## Thành viên dự án
+* **Sinh viên thực hiện**: Hồ Tấn Phước & Phan Hữu Trí
+* **Giảng viên hướng dẫn**: TS. Nguyễn Văn Hiệu
+* **Môn học**: PBL1 - Dự án lập trình tính toán.
+* **Trường**: Trường Đại học Bách Khoa - Đại học Đà Nẵng
