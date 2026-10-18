@@ -33,7 +33,7 @@ Thuật toán Fleury tìm chu trình Euler bằng cách duyệt qua các cạnh 
 
 * **Bước 1: Kiểm tra tính hợp lệ của đồ thị & Kiểm tra tính liên thông**
 
-  Xác minh tính liên thông tổng thể của đồ thị bằng thuật toán Tìm kiếm theo chiều sâu (DFS) phi đệ quy sử dụng stack mảng tĩnh. Kiểm tra bậc của các đỉnh để đảm bảo chu trình Euler tồn tại ($odd = 0$ đối với đồ thị vô hướng; $out\_deg(v) = in\_deg(v)$ với mọi $v$ trong đồ thị có hướng).
+  Xác minh tính liên thông tổng thể của đồ thị bằng thuật toán Tìm kiếm theo chiều sâu (DFS) phi đệ quy sử dụng stack mảng tĩnh. Kiểm tra bậc của các đỉnh để đảm bảo chu trình Euler tồn tại ($odd = 0$ đối với đồ thị vô hướng; $out\_{deg}(v) = in\_{deg}(v)$ với mọi $v$ trong đồ thị có hướng).
 * **Bước 2: Khởi tạo & Nhân bản dữ liệu**
 
   Thiết lập $u = startNode$ và khởi tạo mảng đường đi. Nhân bản ma trận kề gốc sang một ma trận tạm (`temp_adj`) thông qua hàm memcpy để bảo vệ dữ liệu đồ thị ban đầu phục vụ cho việc mô phỏng.
@@ -64,9 +64,9 @@ Thuật toán Hierholzer tìm chu trình Euler bằng cách phân rã đồ th�
   Nhân bản ma trận kề bằng hàm memcpy. Khởi tạo một stack mảng tĩnh (`stackH`) với $startNode$ được đẩy vào stack, đồng thời tạo một mảng kết quả trống (`resH`).
 * **Bước 3: Duyệt chu trình con & Quay lui**
 
-  Kiểm tra đỉnh ở đỉnh stack $curr\_v$:
-  * **Trường hợp 1 (Có sẵn các cạnh chưa duyệt):**  Chọn một đỉnh kề $v$, đẩy $v$ vào stack, xóa cạnh $(curr\_v, v)$ khỏi `temp_adj`, và tiếp tục quá trình duyệt để mở rộng chu trình con.
-  * **Trường hợp 2 (Bị mắc kẹt / Không còn cạnh khả dụng):** Khi $curr\_v$ không còn cạnh đi ra nào, một chu trình con đã được khép kín. Thuật toán lấy $curr\_v$ ra khỏi stack và thêm nó vào resH (giai đoạn quay lui).
+  Kiểm tra đỉnh ở đỉnh stack $curr\_ v$:
+  * **Trường hợp 1 (Có sẵn các cạnh chưa duyệt):**  Chọn một đỉnh kề $v$, đẩy $v$ vào stack, xóa cạnh $(curr\_ v, v)$ khỏi `temp_adj`, và tiếp tục quá trình duyệt để mở rộng chu trình con.
+  * **Trường hợp 2 (Bị mắc kẹt / Không còn cạnh khả dụng):** Khi $curr\_v$ không còn cạnh đi ra nào, một chu trình con đã được khép kín. Thuật toán lấy $curr\_ v$ ra khỏi stack và thêm nó vào resH (giai đoạn quay lui).
 * **Bước 4: Đảo ngược đường đi & Hoàn thành**
 
   Lặp lại Bước 3 cho đến khi stack trống. Do các đỉnh được thu thập trong quá trình quay lui, thứ tự trong `resH` bị đảo ngược. Thuật toán tiến hành đảo ngược resH để tạo ra chu trình Euler theo đúng thứ tự thời gian cuối cùng và chính xác.
